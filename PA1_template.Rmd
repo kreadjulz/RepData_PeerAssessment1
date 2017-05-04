@@ -1,25 +1,86 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+#Reproducible research: Peer graded assignment 1
 
+========================================================
 
-## Loading and preprocessing the data
+**_1. Loading and preprocessing data_**
 
+```{r, echo=TRUE}
+dat <- read.csv("activity.csv")
+dat$date <- as.Date(as.character(dat$date), format = "%Y-%m-%d")
+```
 
+**_2. Total Number of steps per day_**
+```{r, echo=TRUE}
+library(dplyr)
+library(knitr)
+sub1 <- subset(dat, steps >= 0, select = c(steps, date))
+grouped <- group_by(sub1, date)
+Totals <- summarise(grouped, Total.Steps = sum(steps, na.rm = TRUE))
+kable(Totals, caption = "Total number of steps per day", align = "l")
+hist(Totals$Total.Steps, xlab = "Total steps", main = "Total number of steps", col = "blue", breaks = 8)
+mean.med <- summarise(grouped, Mean = round(mean(steps, na.rm = TRUE)), Median = median(steps, na.rm = TRUE))
+kable(mean.med, caption = "Mean and Median steps per day", align = "c")
+```
 
-## What is mean total number of steps taken per day?
+**_3. Average daily activity_**
+```{r, echo=TRUE}
+library(ggplot2)
+sub2 <- subset(dat, steps >= 0, select = c(steps, interval))
+grouped2 <- group_by(sub2, interval)
+daily_interval_avg <- summarise(grouped2, Avg.Steps = mean(steps))
+g <- ggplot(daily_interval_avg, aes(interval, Avg.Steps))
+g+geom_line(colour = "purple")+ggtitle("Daily average steps taken per inteval")+ ylab("Average Steps")
+i <- which.max(daily_interval_avg$Avg.Steps)
+daily_interval_avg$interval[i]
+```
 
+The interval with maximun number of steps averaged by all days is `r daily_interval_avg$interval[i]`
 
+**_4. Missing values_**
+```{r, echo=TRUE}
+icc <- !complete.cases(dat)
+Nas <- sum(icc)
+```
+There are `r Nas` rows with missing values
+```{r, echo=TRUE}
+dat1 <- dat
+m <- round(mean(dat1[,1], na.rm = TRUE))
+for(i in 1: nrow(dat1)){
+        if (is.na(dat1[i,1]) == TRUE){
+            dat1[i,1] <- m
+        }else{
+                dat1[i,1] <- dat1[i,1]
+        }
+}
+Totals1 <- summarise(group_by(subset(dat1, select = c(steps,date)),date), Total.Steps = sum(steps, na.rm = TRUE))
+hist(Totals1$Total.Steps, xlab = "Total steps", main = "Total number of steps", col = "brown", breaks = 8)
+mean.med1 <- summarise(group_by(subset(dat1, select = c(steps,date)),date), Mean = round(mean(steps, na.rm = TRUE)), Median = median(steps, na.rm = TRUE))
+kable(mean.med1, caption = "Mean and Median steps per day", align = "c")
+```
 
-## What is the average daily activity pattern?
+**_Weekdays Vs Weekends_**
 
+```{r, echo=TRUE}
+dat1 <- mutate(dat1, Weekday = weekdays(dat1$date))
+for(i in 1:nrow(dat1)){
+        if(dat1[i,4] ==  "Saturday" | dat1[i,4] == "Sunday"){
+                dat1[i,4] <- "weekend"
+        }else if(dat1[i,4] == "Monday" | dat1[i,4] == "Tuesday" | dat1[i,4] == "Wednesday" | dat1[i,4] == "Thursday" | dat1[i,4] == "Friday"){
+                dat1[i,4] <- "weekday"
+        }
+}
+dat1$Weekday <- as.factor(dat1$Weekday)
+```
 
+```{r, echo= TRUE }
+sub3 <- subset(dat1, select = c(steps, interval, Weekday))
+grouped3 <- group_by(sub3, Weekday, interval)
+interval_Avg.Steps <- summarise(grouped3, Avg.Steps = mean(steps))
+g <- ggplot(interval_Avg.Steps, aes(interval, Avg.Steps))
+g <- g + geom_line(colour = "brown") +facet_grid(Weekday ~.)
+g <- g+ xlab("Interval") + ylab("Number of Steps") + ggtitle("5-minute interval average number of steps taken")
+g
+```
 
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
+* Weekends have more steps taken across most 5-minute intervals than weekdays
+* Weekdays have the interval with the highest number of steps 
