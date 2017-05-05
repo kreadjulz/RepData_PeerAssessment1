@@ -2,6 +2,7 @@
 output: 
   html_document:
     keep_md: yes
+    fig_caption: yes
 ---
 #Reproducible research: Peer graded assignment 1
 
@@ -63,7 +64,7 @@ mean.med1 <- summarise(group_by(subset(dat1, select = c(steps,date)),date), Mean
 kable(mean.med1, caption = "Mean and Median steps per day", align = "c", format = "markdown")
 ```
 
-**_Weekdays Vs Weekends_**
+**_5. Weekdays Vs Weekends_**
 
 ```{r, echo=TRUE}
 dat1 <- mutate(dat1, Weekday = weekdays(dat1$date))

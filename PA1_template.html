@@ -988,7 +988,7 @@ kable(mean.med1, caption = &quot;Mean and Median steps per day&quot;, align = &q
 </tr>
 </tbody>
 </table>
-<p><strong><em>Weekdays Vs Weekends</em></strong></p>
+<p><strong><em>5. Weekdays Vs Weekends</em></strong></p>
 <pre class="r"><code>dat1 &lt;- mutate(dat1, Weekday = weekdays(dat1$date))
 for(i in 1:nrow(dat1)){
         if(dat1[i,4] ==  &quot;Saturday&quot; | dat1[i,4] == &quot;Sunday&quot;){

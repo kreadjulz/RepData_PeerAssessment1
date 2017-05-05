@@ -287,7 +287,7 @@ kable(mean.med1, caption = "Mean and Median steps per day", align = "c", format 
 | 2012-11-29 |  24  |   0    |
 | 2012-11-30 |  37  |   37   |
 
-**_Weekdays Vs Weekends_**
+**_5. Weekdays Vs Weekends_**
 
 
 ```r
