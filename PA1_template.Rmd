@@ -21,10 +21,10 @@ library(knitr)
 sub1 <- subset(dat, steps >= 0, select = c(steps, date))
 grouped <- group_by(sub1, date)
 Totals <- summarise(grouped, Total.Steps = sum(steps, na.rm = TRUE))
-kable(Totals, caption = "Total number of steps per day", align = "l")
+kable(Totals, caption = "Total number of steps per day", align = "l", format = "markdown")
 hist(Totals$Total.Steps, xlab = "Total steps", main = "Total number of steps", col = "blue", breaks = 8)
 mean.med <- summarise(grouped, Mean = round(mean(steps, na.rm = TRUE)), Median = median(steps, na.rm = TRUE))
-kable(mean.med, caption = "Mean and Median steps per day", align = "c")
+kable(mean.med, caption = "Mean and Median steps per day", align = "c", format = "markdown")
 ```
 
 **_3. Average daily activity_**
@@ -60,7 +60,7 @@ for(i in 1: nrow(dat1)){
 Totals1 <- summarise(group_by(subset(dat1, select = c(steps,date)),date), Total.Steps = sum(steps, na.rm = TRUE))
 hist(Totals1$Total.Steps, xlab = "Total steps", main = "Total number of steps", col = "brown", breaks = 8)
 mean.med1 <- summarise(group_by(subset(dat1, select = c(steps,date)),date), Mean = round(mean(steps, na.rm = TRUE)), Median = median(steps, na.rm = TRUE))
-kable(mean.med1, caption = "Mean and Median steps per day", align = "c")
+kable(mean.med1, caption = "Mean and Median steps per day", align = "c", format = "markdown")
 ```
 
 **_Weekdays Vs Weekends_**
